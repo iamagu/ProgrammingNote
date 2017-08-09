@@ -35,3 +35,5 @@ Collection<B> bs
 B
 @ManyToMany(mappedBy="bs")  
 Collection<A> as
+
+注意：多对多关系需要注意避开循环映射，否则容易造成内存泄漏。建议使用mappedBy让一方来维护映射关系。
