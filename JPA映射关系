@@ -23,3 +23,15 @@ My_Id指在T表（Many）生成的字段名，值为当前对象（One）的id�
 T t
 T_Id指在当前表（Many）生成的字段名，值为T的id值。
 
+
+多对多
+A
+@ManyToMany   
+@JoinTable(name="A_B",   
+    joinColumns=@JoinColumn(name="A_ID"),  
+    inverseJoinColumns=@JoinColumn(name="B_ID"))    
+Collection<B> bs
+
+B
+@ManyToMany(mappedBy="bs")  
+Collection<A> as
