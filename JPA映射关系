@@ -1,2 +1,25 @@
+一对一关系
+
+方法一
+Embedded/Embeddable：合并成一张表（即将被@Embedded的属性对象嵌入到当前对象）
+
+方法二
 OneToOne
-为保证同时将关联对象一起保存，必须开启级联功能。
+单向关联，使用外键。单向关联的意思为操作关联对象会发生级联动作，操作被关联对象却不会发生级联动作。
+双向关联，使用中间表。双向关联，操作任一对象都会发生级联动作。
+
+注意：为保证同时将关联对象一起保存，必须开启级联功能。
+
+
+一对多
+@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)  
+@JoinColumn(name="My_Id")  
+List<T> ts 
+My_Id指在T表（Many）生成的字段名，值为当前对象（One）的id值。
+
+多对一
+@ManyToOne(cascade=CascadeType.ALL)  
+@JoinColumn(name="T_Id")
+T t
+T_Id指在当前表（Many）生成的字段名，值为T的id值。
+
