@@ -1,0 +1,4 @@
+一条消息只有被ISR中的所有follower都从leader复制过去才会被认为已提交。
+这样就避免了部分数据被写进了leader，还没来得及被任何follower复制就宕机了，而造成数据丢失。
+而对于producer而言，它可以选择是否等待消息commit，这可以通过request.required.acks来设置。
+这种机制确保了只要ISR中有一个或者以上的follower，一条被commit的消息就不会丢失。
