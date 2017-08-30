@@ -2,3 +2,28 @@
 这样就避免了部分数据被写进了leader，还没来得及被任何follower复制就宕机了，而造成数据丢失。
 而对于producer而言，它可以选择是否等待消息commit，这可以通过request.required.acks来设置。
 这种机制确保了只要ISR中有一个或者以上的follower，一条被commit的消息就不会丢失。
+
+Leader选择
+一个基本的原则就是，如果当前leader宕了，新的leader必须拥有原来leader commit的所有消息。
+
+
+消息偏移量、消息在文件中的物理偏移
+
+
+
+高可靠性保障
+  Kafka高可靠性保障来源于它的复本策略。
+  
+1.文件存储机制
+  Topic -> Partition -> Segment(.log .index)
+  分区是实现横向扩展，可以提高并发度，分Segment更利于对消息的管理（比如：删除已经消费过的消息，避免只有一个文件情况下的文件无限扩张）。
+  
+  如何从Partition中通过Offset查找Message呢？
+  根据Offset计算（.index文件是以上一个文件内最后一条Message的偏移量命名）Message所在的文件。
+  说明：查找文件时将文件名排序，通过二分查找能快速的找到消息所在的文件。
+  
+  获取消息的起始读取偏移量后如何知道读取到哪里截止？
+  消息都具有固定的物理结构，包括：offset（8 Bytes）、消息体的大小（4 Bytes）、crc32（4 Bytes）、magic（1 Byte）、attributes（1 Byte）、key length（4 Bytes）、key（K Bytes）、payload(N Bytes)等等字段，可以确定一条消息的大小，即读取到哪里截止。
+  
+复制原理和同步方式
+  Leader负责跟踪Followers的滞后状态
