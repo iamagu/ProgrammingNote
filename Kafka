@@ -1,14 +1,7 @@
-一条消息只有被ISR中的所有follower都从leader复制过去才会被认为已提交。
-这样就避免了部分数据被写进了leader，还没来得及被任何follower复制就宕机了，而造成数据丢失。
-而对于producer而言，它可以选择是否等待消息commit，这可以通过request.required.acks来设置。
-这种机制确保了只要ISR中有一个或者以上的follower，一条被commit的消息就不会丢失。
-
-Leader选择
-一个基本的原则就是，如果当前leader宕了，新的leader必须拥有原来leader commit的所有消息。
 
 
-消息偏移量、消息在文件中的物理偏移
-
+偏移量
+消息偏移量、消息在文件中的物理偏移：消息偏移量是指消息在全局分区中的偏移量，消息在文件中的物理偏移是指在.log文件中消息的起始位置。
 
 
 高可靠性保障
@@ -27,3 +20,23 @@ Leader选择
   
 复制原理和同步方式
   Leader负责跟踪Followers的滞后状态
+  
+
+高可用性
+  复本机制
+  Leader选举
+    一个基本的原则就是，如果当前leader宕了，新的leader必须拥有原来leader commit的所有消息。
+
+高可靠性
+  一条消息只有被ISR中的所有Follower都从Leader复制过去才会被认为已提交。这样就避免了部分数据被写进了Leader，还没来得及被任何Follower复制就宕机了，而造成数据丢失。而对于Producer而言，它可以选择是否等待消息Commit，这可以通过request.required.acks来设置。这种机制确保了只要ISR中有一个或者以上的Follower，一条被commit的消息就不会丢失。
+  
+
+ISR(In-Sync Replicas)、OSR(Outof-Sync Replicas)、AR(Assigned Replicas)
+  AR = ISR + OSR
+  replica.lag.time.max.ms 最大延迟许毫秒数，当Follower滞后于Leader达到这个毫秒数，则会被路踢出ISR列表，被踢出的副本放入OSR中。
+  
+高可靠性配置
+  topic的配置：replication.factor>=3,即副本数至少是3个；2<=min.insync.replicas<=replication.factor
+  broker的配置：leader的选举条件unclean.leader.election.enable=false
+  producer的配置：request.required.acks=-1(all)，producer.type=sync
+说明：broker配置项是指允许从非ISR中选举Leader
