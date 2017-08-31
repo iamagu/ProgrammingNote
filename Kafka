@@ -40,3 +40,10 @@ ISR(In-Sync Replicas)、OSR(Outof-Sync Replicas)、AR(Assigned Replicas)
   broker的配置：leader的选举条件unclean.leader.election.enable=false
   producer的配置：request.required.acks=-1(all)，producer.type=sync
 说明：broker配置项是指允许从非ISR中选举Leader
+
+Kafka高吞吐
+  1 顺序写
+  2 零拷贝
+  3 分段存储（并行处理）
+  4 批量
+  5 压缩
