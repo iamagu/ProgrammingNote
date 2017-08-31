@@ -48,3 +48,7 @@ Kafka高吞吐
   4 批量
   5 压缩
   6 PageCache
+
+
+负载均衡
+  Kafka提供了一个 metadata API来管理broker之间的负载（对Kafka0.8.x而言，对于0.7.x主要靠zookeeper来实现负载均衡）。
